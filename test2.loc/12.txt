@@ -1,0 +1,161 @@
+$(document).ready(function(){
+
+filter_data();
+
+function filter_data()
+{
+    $('.filter_data').html('<div id="loading" style="" ></div>');
+    var action = 'fetch_data';
+    var minimum_price = $('#hidden_minimum_price').val();
+    var maximum_price = $('#hidden_maximum_price').val();
+    var q = "components";
+    var kind = get_filter('kind');
+    var nametype = get_filter('nametype');
+    var ram = get_filter('ram');
+    var storage = get_filter('storage');
+    $.ajax({
+        url:"fetch_data.php",
+        method:"POST",
+        data:{action:action, q:q ,minimum_price:minimum_price, maximum_price:maximum_price, kind:kind, nametype:nametype, storage:storage},
+        success:function(data){
+            $('.filter_data').html(data);
+        }
+    });
+}
+
+function get_filter(class_name)
+{
+    var filter = [];
+    $('.'+class_name+':checked').each(function(){
+        filter.push($(this).val());
+    });
+    return filter;
+}
+
+$('.common_selector').click(function(){
+    filter_data();
+});
+
+$('#price_range').slider({
+    range:true,
+    min:1,
+    max:1000,
+    values:[1, 1000],
+    step:1,
+    stop:function(event, ui)
+    {
+        $('#price_show').html(ui.values[0] + ' - ' + ui.values[1]);
+        $('#hidden_minimum_price').val(ui.values[0]);
+        $('#hidden_maximum_price').val(ui.values[1]);
+        filter_data();
+    }
+});
+
+});
+
+    </script>    
+
+
+
+
+
+
+
+
+
+
+
+
+<?php
+
+//fetch_data.php
+
+include('database_connection.php');
+
+
+ 
+
+	if(isset($_GET["nametype"]))
+	{
+		$typ_filter = join('', $_GET["nametype"]);
+		$query = "SELECT * FROM `$typ_filter` WHERE product_status = '1'";
+	}
+	
+	
+	if(isset($_GET["minimum_price"], $_GET["maximum_price"]) && !empty($_GET["minimum_price"]) && !empty($_GET["maximum_price"]))
+	{
+		$query .= "
+		 AND amount BETWEEN '".$_GET["minimum_price"]."' AND '".$_GET["maximum_price"]."'
+		";
+	}
+	if(isset($_GET["kind"]))
+	{
+		$kind_filter = implode("','", $_GET["kind"]);
+		$query .= "
+		 AND kind IN('".$kind_filter."')
+		";
+	}
+
+	if(isset($_GET["storage"]))
+	{
+		$storage_filter = implode("','", $_GET["storage"]);
+		$query .= "
+		 AND storage IN('".$storage_filter."')
+		";
+	}
+
+	
+
+	$statement = $connectnew->prepare($query);
+	$statement->execute();
+	$result = $statement->fetchAll();
+	$total_row = $statement->rowCount();
+	$output = '';
+	if($total_row > 0) {
+		?>	
+			<form name="exp" action="export.php?q=<?php echo $query; ?>" method="post" enctype="multipart/form-data">
+			</form>
+			<form name="data" action="component_add.php" method="get" enctype="multipart/form-data">
+			<table id="table">
+			<tr>
+			<th class="reph"></th>
+			<th class="reph">ID</th>
+			<th class="reph">Название</th>	
+			<th class="reph">Количество</th>
+			<th class="reph">Тип</td>
+			<th class="reph">Место Хранения</th>
+			<th class="reph">Действия</th>
+
+			<a href="component.php?id=<?=$id;?>"></a>
+			</tr>
+
+			<?php
+			foreach($result as $row) {
+						
+				$output .= '
+				<tr class="uy">
+				<td class="rep"><input type="checkbox" name="kit[]" value="'. $row['id'] .'"></td>
+				<td class="rep">'. $row['id'] .'</td>
+				<td class="rep"><a href="component.php?id='.$row['id'].'&t='.$kind_filter.'">'. $row['name'] .'</a></td>
+				<td class="rep">'. $row['amount'] .'</td>
+				<td class="rep">'. $row['kind'] .'</td>
+				<td class="rep">'. $row['storage'] .'</td>
+				<td class="rep"><a href="comp_upd.php?id='.$row['id'].'"> <img class="ind_svg" src="./uploads/svg/mdi_pencil.svg" alt=""> </a>
+				<a href="act/del.php?id='.$row['id'].'"> <img class="ind_svg" src="./uploads/svg/mdi_delete.svg" alt=""> </a></td>
+
+				</tr>
+				
+				'; 
+			}
+	
+		} else {
+			$output = '<h3>Не найдено</h3>';
+		}
+
+		
+		echo $output;
+
+
+	};
+
+?>
