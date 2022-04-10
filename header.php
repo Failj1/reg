@@ -26,7 +26,7 @@
             <div class="wrp_is">
         
 		<div class="icon">
-        <a href="index.php"><img src="uploads/logo/logo.png" alt=""></a>
+        <a href="index.php?types%5B%5D=kit"><img src="uploads/logo/logo.png" alt=""></a>
 		</div>
 
         <div class="srch">
@@ -50,6 +50,7 @@
             <div id="myDropdown" class="dropdown-content">
             <p><?=$_SESSION['user']['full_name']?></p><hr>
             <a href="profile.php">Кабинет</a>
+            <a href="register.php">Регистрация Пользователя</a>
             <!-- <a class="" href="act/export.php">Создать отчёт</a> -->
             <a class="ext" href="act/logout.php">Выход</a>
 

@@ -77,6 +77,7 @@ include('database_connection.php');
                     $type = implode("", $_GET['types']);
                     ?>
                     <div class="list-group-item checkbox">
+                        
                         <label id="lblradio"><input onclick='this.form.submit()' name="types[]" type="radio" class="common_selector nametype" value="<?php echo $row['nametype']; ?>"
                         <?php if(in_array($row['nametype'], $checked)){ echo "checked"; } ?>> <?php echo $row['nametype']; ?></label>
                     </div>

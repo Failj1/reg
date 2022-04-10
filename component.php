@@ -9,19 +9,32 @@ $comp = mysqli_fetch_assoc($comp);
 ?>
 
 <head>
-    <title><?=$comp['name']?></title>
+
 
     
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<title><?=$comp['name']?></title>
+
+
 <script src="js/jquery-1.10.2.min.js"></script>
-    <script src="js/jquery-ui.js"></script>
-    <script src="js/script.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link href = "css/jquery-ui.css" rel = "stylesheet">
+<script src="js/jquery-ui.js"></script>
+<script src="js/script.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<link href = "css/jquery-ui.css" rel = "stylesheet">
 
 
-    <!-- Custom CSS -->
-    <link href="css/style.css" rel="stylesheet">
+<!-- Custom CSS -->
+<link href="css/style.css" rel="stylesheet">
+</head>
+
 <body>
 <?php
     session_start();
@@ -40,7 +53,9 @@ $comp = mysqli_fetch_assoc($comp);
 
 
     <h2>#<?=$comp['id']?> <?=$comp['name']?></h2><br>
-    <p><?=$comp['text']?></p>  
+    <p><?=$comp['text']?></p>
+    <img src="<?=$comp['image']?>" alt=""> 
+
 
 
 <?php
